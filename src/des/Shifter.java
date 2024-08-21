@@ -1,5 +1,8 @@
 package des;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /*
  * Copyright (C) 2024 yedhu226
  *
@@ -22,5 +25,37 @@ package des;
  * @author yedhu226
  */
 public class Shifter {
+    static int[] schedule={1,1,2,2,2,2,2,2,1,2,2,2,2,2,2,1};
     
+    static String shift(String in,int r){
+        String result=in.substring(schedule[r]);
+        result=result+in.substring(0, r);
+        return result;        
+    }
+    
+    static void shift(String[][] in, int r){
+        
+        Queue<String> hold =new LinkedList<>();
+        int i=schedule[r];
+        for(int x=0;x<i;x++)
+            hold.add(in[0][x]);
+        int j=0;
+        out:for (String[] in1 : in) {
+            for (int q = 0; q < in1.length; q++) {
+                in1[q] = in[j][i];
+                i++;
+                if (i >= in1.length || j>=in.length) {
+                    i=0;
+                    j++;
+                    if (j==in.length) {
+                        for (String _ : hold) {
+                            in1[q] = hold.remove();
+                            q++;
+                        }
+                        break out;
+                    }
+                }
+            }
+        }
+    }
 }

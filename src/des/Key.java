@@ -16,35 +16,39 @@
  */
 package des;
 
-import java.math.BigInteger;
+import static des.Converter.HexToBinary;
+import static des.Shifter.shift;
+import static des.Transformer.perm_pc1;
+import static des.Transformer.perm_pc2;
 
 /**
  *
  * @author yedhu226
  */
-public class Converter {
+public class Key {
 
-    static String HexToBinary(String in) {
-        String h = new BigInteger(in, 16).toString(2);
-        while (h.length() < 64) {
-            h = "0" + h;
+    private String key;
+    private String[][][] p_key = new String[2][4][7];
+    private String[][][] r_key = new String[16][6][8];
+
+    public Key(String k) {
+        this.key = k;
+        this.key = HexToBinary(this.key);
+        this.p_key=perm_pc1(this.key);
+        for(int i=0;i<16;i++){
+            shift(p_key[0],i);
+            shift(p_key[1],i);
+            r_key[i]=perm_pc2(p_key);
         }
-        return h;
+        reset();
+    }
+    
+    String[][] get_key(int r){
+        return r_key[r];
+    }
+    
+    final void reset(){
+        this.p_key=perm_pc1(this.key);
     }
 
-    static String BinaryToHex(String in) {
-        return new BigInteger(in, 2).toString(16);
-    }
-
-    static String DecimalToBinary(int n) {
-        String out = Integer.toBinaryString(n);
-        while (out.length() < 4) {
-            out = "0" + out;
-        }
-        return out;
-    }
-
-    static int BinaryToDecimal(String n) {
-        return Integer.parseInt(n, 2);
-    }
 }
